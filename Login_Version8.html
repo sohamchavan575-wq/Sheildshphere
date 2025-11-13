@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shieldsphere - Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-wrapper { max-width: 980px; margin: 1.6rem auto; display: grid; grid-template-columns: 1fr 420px; gap: 1rem; padding: 0 1rem; }
+    .auth-info { padding: 1.2rem; }
+    .auth-card { max-width: 420px; margin: 0 auto; }
+    .tabs { display:flex; gap:0.4rem; margin-bottom:0.6rem; }
+    .tab { flex:1; text-align:center; padding:0.5rem; cursor:pointer; border-radius:8px; background:#0d1117; border:1px solid #30363d; color:#c9d1d9; }
+    .tab.active { background:#238636; color:white; }
+    .small-note { color:#8b949e; font-size:0.95rem; margin-top:0.6rem; }
+    .otp-input { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #30363d; background:#0d1117; color:#e6edf3; }
+    @media (max-width: 880px) { .auth-wrapper { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Shieldsphere</h1>
+    <p>Learn how to protect your personal information online</p>
+  </header>
+
+  <nav>
+    <a href="Login.html" class="active">Login</a>
+    <a href="index.html">Home</a>
+    <a href="stats.html">Stats</a>
+    <a href="risks.html">Risks</a>
+    <a href="tips.html">Tips</a>
+    <a href="resources.html">Resources</a>
+    <a href="news.html">News</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="self-check.html">Self-Check</a>
+    <a href="spot-the-scam.html">Spot the Scam</a>
+    <a href="contact.html">Feedback</a>
+  </nav>
+
+  <div class="container auth-wrapper">
+    <div class="auth-info">
+      <div class="card">
+        <h2>Welcome back to Shieldsphere</h2>
+        <p class="small-note">Sign in to access additional tools and save your progress. Register with email or phone number. Use "Forgot" to reset your password.</p>
+        <h3 style="margin-top:1rem;color:#58a6ff;">Why create an account?</h3>
+        <ul style="margin-top:0.5rem;color:#c9d1d9;">
+          <li>Save quiz progress and personalize tips</li>
+          <li>Receive security updates and breach alerts</li>
+          <li>Submit and track feedback</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card auth-card">
+      <div>
+        <div class="tabs" role="tablist" aria-label="Authentication tabs">
+          <div class="tab active" id="tab-login">Login</div>
+          <div class="tab" id="tab-register">Register</div>
+          <div class="tab" id="tab-forgot">Forgot</div>
+        </div>
+
+        <!-- LOGIN -->
+        <form id="loginForm" style="display:block;">
+          <label for="login-identifier">Email or Phone</label>
+          <input id="login-identifier" class="otp-input" placeholder="you@example.com OR +911234567890" />
+
+          <label for="login-password" style="margin-top:0.6rem;">Password</label>
+          <input id="login-password" class="otp-input" type="password" placeholder="Your password" />
+
+          <div style="display:flex;gap:0.6rem;margin-top:0.8rem;">
+            <button type="submit" class="login-btn" style="flex:1;">Sign in</button>
+            <button type="button" id="btn-to-register" class="secondary" style="flex:0.9;">Create</button>
+          </div>
+
+          <div id="loginMessage" class="small-note" style="margin-top:0.6rem;" role="status" aria-live="polite"></div>
+        </form>
+
+        <!-- REGISTER -->
+        <form id="registerForm" style="display:none;">
+          <label for="reg-email">Email (optional)</label>
+          <input id="reg-email" class="otp-input" placeholder="you@example.com" type="email" />
+
+          <label for="reg-phone" style="margin-top:0.6rem;">Phone (optional)</label>
+          <input id="reg-phone" class="otp-input" placeholder="+911234567890" />
+
+          <label for="reg-password" style="margin-top:0.6rem;">Password (min 6 chars)</label>
+          <input id="reg-password" class="otp-input" type="password" />
+
+          <div style="display:flex;gap:0.6rem;margin-top:0.8rem;">
+            <button type="submit" class="login-btn" style="flex:1;">Register</button>
+            <button type="button" id="btn-to-login" class="secondary" style="flex:0.9;">Back</button>
+          </div>
+
+          <div id="registerMessage" class="small-note" style="margin-top:0.6rem;" role="status" aria-live="polite"></div>
+          <div id="recaptcha-container"></div>
+        </form>
+
+        <!-- OTP / VERIFY (for phone flows) -->
+        <form id="otpForm" style="display:none;margin-top:0.6rem;">
+          <label for="otp-code">Enter SMS code</label>
+          <input id="otp-code" class="otp-input" placeholder="6-digit code" />
+          <div style="display:flex;gap:0.6rem;margin-top:0.8rem;">
+            <button type="submit" class="login-btn" style="flex:1;">Verify</button>
+            <button type="button" id="btn-cancel-otp" class="secondary" style="flex:0.9;">Cancel</button>
+          </div>
+          <div id="otpMessage" class="small-note" style="margin-top:0.6rem;" role="status" aria-live="polite"></div>
+        </form>
+
+        <!-- FORGOT -->
+        <form id="forgotForm" style="display:none;">
+          <label for="forgot-email">Email for password reset</label>
+          <input id="forgot-email" class="otp-input" placeholder="you@example.com" />
+          <div style="display:flex;gap:0.6rem;margin-top:0.8rem;">
+            <button type="submit" class="login-btn" style="flex:1;">Send reset email</button>
+            <button type="button" id="btn-back-login" class="secondary" style="flex:0.9;">Back</button>
+          </div>
+          <div id="forgotMessage" class="small-note" style="margin-top:0.6rem;" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Shieldsphere
+  </footer>
+
+  <script type="module" src="./auth.js"></script>
+  <script type="module">
+    import { initApp, loginWithEmailOrPhone, registerWithEmailPassOrPhone, verifyOtp, sendPasswordReset } from './auth.js';
+    initApp();
+
+    function getRedirectParam() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const r = params.get('redirect');
+        return r ? decodeURIComponent(r) : null;
+      } catch (e) { return null; }
+    }
+
+    const targetAfterLogin = getRedirectParam() || 'index.html';
+
+    const tabs = { login: document.getElementById('tab-login'), register: document.getElementById('tab-register'), forgot: document.getElementById('tab-forgot') };
+    const forms = { login: document.getElementById('loginForm'), register: document.getElementById('registerForm'), forgot: document.getElementById('forgotForm'), otp: document.getElementById('otpForm') };
+
+    function showTab(name) {
+      Object.values(tabs).forEach(t => t.classList.remove('active'));
+      Object.values(forms).forEach(f => f.style.display = 'none');
+      tabs[name].classList.add('active');
+      if (name === 'login') forms.login.style.display = 'block';
+      if (name === 'register') forms.register.style.display = 'block';
+      if (name === 'forgot') forms.forgot.style.display = 'block';
+    }
+
+    tabs.login.addEventListener('click', () => showTab('login'));
+    tabs.register.addEventListener('click', () => showTab('register'));
+    tabs.forgot.addEventListener('click', () => showTab('forgot'));
+    document.getElementById('btn-to-register').addEventListener('click', () => showTab('register'));
+    document.getElementById('btn-to-login').addEventListener('click', () => showTab('login'));
+    document.getElementById('btn-back-login').addEventListener('click', () => showTab('login'));
+
+    const loginMsg = document.getElementById('loginMessage');
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginMsg.textContent = '';
+      const id = document.getElementById('login-identifier').value.trim();
+      const pw = document.getElementById('login-password').value;
+      if (!id || !pw) { loginMsg.textContent = 'Please enter identifier and password.'; return; }
+      loginMsg.textContent = 'Signing in…';
+      try {
+        await loginWithEmailOrPhone(id, pw);
+        loginMsg.textContent = 'Signed in. Redirecting…';
+        setTimeout(()=> window.location.href = targetAfterLogin, 700);
+      } catch (err) {
+        if (err && err.message === 'otp_sent') {
+          loginMsg.textContent = 'OTP sent to phone—enter the code.';
+          forms.otp.style.display = 'block';
+          forms.login.style.display = 'none';
+        } else {
+          loginMsg.textContent = err.message || 'Sign-in failed.';
+        }
+      }
+    });
+
+    const regMsg = document.getElementById('registerMessage');
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      regMsg.textContent = '';
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const pw = document.getElementById('reg-password').value;
+      if (!email && !phone) { regMsg.textContent = 'Please provide email or phone to register.'; return; }
+      if (email && pw.length < 6) { regMsg.textContent = 'Password must be at least 6 characters.'; return; }
+      regMsg.textContent = 'Registering…';
+      try {
+        const result = await registerWithEmailPassOrPhone({ email, phone, password: pw });
+        if (result === 'otp_sent') {
+          regMsg.textContent = 'OTP sent to phone — enter the code below.';
+          forms.otp.style.display = 'block';
+          forms.register.style.display = 'none';
+        } else {
+          regMsg.textContent = 'Registration complete. Redirecting…';
+          setTimeout(()=> window.location.href = targetAfterLogin, 700);
+        }
+      } catch (err) {
+        regMsg.textContent = err.message || 'Registration failed.';
+      }
+    });
+
+    const otpMsg = document.getElementById('otpMessage');
+    document.getElementById('otpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      otpMsg.textContent = 'Verifying…';
+      const code = document.getElementById('otp-code').value.trim();
+      if (!code) { otpMsg.textContent = 'Enter the 6-digit code.'; return; }
+      try {
+        await verifyOtp(code);
+        otpMsg.textContent = 'Phone verified — signing you in.';
+        setTimeout(()=> window.location.href = targetAfterLogin, 700);
+      } catch (err) {
+        otpMsg.textContent = err.message || 'Verification failed.';
+      }
+    });
+
+    document.getElementById('btn-cancel-otp').addEventListener('click', () => {
+      document.getElementById('otp-code').value = '';
+      forms.otp.style.display = 'none';
+      forms.register.style.display = 'block';
+    });
+
+    const forgotMsg = document.getElementById('forgotMessage');
+    document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      forgotMsg.textContent = '';
+      const email = document.getElementById('forgot-email').value.trim();
+      if (!email) { forgotMsg.textContent = 'Enter the email you used to sign up.'; return; }
+      forgotMsg.textContent = 'Sending password reset email…';
+      try {
+        await sendPasswordReset(email);
+        forgotMsg.textContent = 'Password reset email sent. Check your inbox.';
+      } catch (err) {
+        forgotMsg.textContent = err.message || 'Could not send reset email.';
+      }
+    });
+
+    showTab('login');
+  </script>
+
+  <script type="module" src="./nav-auth.js"></script>
+</body>
+</html>

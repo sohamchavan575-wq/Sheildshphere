@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shieldsphere - Feedback</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .feedback-section { max-width: 700px; margin: auto; padding: 30px; }
+    .star-rating { display:flex; gap:10px; font-size:24px; margin-top:10px; cursor:pointer; }
+    .star { color:#555; transition:color .2s; }
+    .star.hover,.star.selected { color:#f4c542; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Shieldsphere</h1>
+    <p>Learn how to protect your personal information online</p>
+  </header>
+
+  <nav>
+    <a href="Login.html">Login</a>
+    <a href="index.html">Home</a>
+    <a href="stats.html">Stats</a>
+    <a href="risks.html">Risks</a>
+    <a href="tips.html">Tips</a>
+    <a href="resources.html">Resources</a>
+    <a href="news.html">News</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="self-check.html">Self-Check</a>
+    <a href="spot-the-scam.html">Spot the Scam</a>
+    <a href="contact.html" class="active">Feedback</a>
+  </nav>
+
+  <div class="container">
+    <div class="card feedback-section">
+      <h2>Send Your Feedback</h2>
+
+      <label for="fb-name">Name</label>
+      <input id="fb-name" placeholder="Your name" />
+
+      <label for="fb-message" style="margin-top:10px;">Feedback</label>
+      <textarea id="fb-message" placeholder="Type your thoughts here..." rows="6" style="width:100%;padding:8px;border-radius:6px;background:#0d1117;border:1px solid #30363d;color:#e6edf3;"></textarea>
+
+      <label style="margin-top:10px;">Rate this website</label>
+      <div class="star-rating" id="starRating">
+        <span class="star" data-rating="1">&#9733;</span>
+        <span class="star" data-rating="2">&#9733;</span>
+        <span class="star" data-rating="3">&#9733;</span>
+        <span class="star" data-rating="4">&#9733;</span>
+        <span class="star" data-rating="5">&#9733;</span>
+      </div>
+
+      <div style="display:flex;gap:.6rem;margin-top:12px;">
+        <button id="btnSubmit" class="login-btn" style="flex:1;">Submit Feedback</button>
+        <button id="btnSignIn" class="secondary" style="flex:0.9;">Sign in</button>
+      </div>
+
+      <p id="fbMessage" class="small-note" style="margin-top:10px;"></p>
+
+      <p class="small-note">Note: this feedback will be stored in Firestore. You must be signed in to submit feedback. <a href="Login.html">Sign in</a> or <a href="Login.html">Register</a>.</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Shieldsphere
+  </footer>
+
+  <script type="module">
+    import { initApp, onAuthStateChanged, submitFeedback } from './auth.js';
+    initApp();
+    let currentUser = null;
+    onAuthStateChanged((user) => { currentUser = user; });
+
+    // star rating UI
+    const stars = document.querySelectorAll('.star');
+    let selectedRating = 0;
+    stars.forEach((star, index) => {
+      star.addEventListener('mouseover', () => {
+        stars.forEach((s,i)=> s.classList.toggle('hover', i <= index));
+      });
+      star.addEventListener('mouseout', () => stars.forEach(s=>s.classList.remove('hover')));
+      star.addEventListener('click', () => {
+        selectedRating = index + 1;
+        stars.forEach((s,i)=> s.classList.toggle('selected', i < selectedRating));
+      });
+    });
+
+    document.getElementById('btnSubmit').addEventListener('click', async () => {
+      const name = document.getElementById('fb-name').value.trim();
+      const message = document.getElementById('fb-message').value.trim();
+      const fbMessage = document.getElementById('fbMessage');
+      fbMessage.textContent = '';
+      if (!currentUser) { fbMessage.textContent = 'You must sign in to submit feedback.'; return; }
+      if (!message) { fbMessage.textContent = 'Please enter feedback first.'; return; }
+      fbMessage.textContent = 'Submitting…';
+      try {
+        await submitFeedback({ name, message, rating: selectedRating || null, user: currentUser });
+        fbMessage.textContent = 'Thanks — feedback submitted.';
+        document.getElementById('fb-name').value = '';
+        document.getElementById('fb-message').value = '';
+        selectedRating = 0;
+        stars.forEach(s=>s.classList.remove('selected'));
+      } catch (err) {
+        fbMessage.textContent = err.message || 'Could not submit feedback.';
+      }
+    });
+
+    document.getElementById('btnSignIn').addEventListener('click', () => {
+      window.location.href = 'Login.html';
+    });
+  </script>
+
+  <script type="module" src="./nav-auth.js"></script>
+</body>
+</html>
